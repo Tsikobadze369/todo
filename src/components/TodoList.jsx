@@ -1,60 +1,46 @@
-import { Component } from "react";
+import React, { useState } from "react";
 import TodoItem from "./TodoItem";
 
-class TodoList extends Component {
-  state = {
-    inputValue: "",
-    todos: [
-      //   { id: 1, name: "dance" },
-      //   { id: 2, name: "eat" },
-    ],
+const TodoList = () => {
+  const [inputValue, setInputValue] = useState("");
+  const [todos, setTodos] = useState([]);
+
+  const onChange = (e) => {
+    setInputValue(e.target.value);
   };
 
-  onChange = (e) => {
-    const value = e.target.value;
-    this.setState({ inputValue: value });
-  };
-  addToDo = (e) => {
+  const addToDo = (e) => {
     e.preventDefault();
     const todo = {
-      id: this.state.todos.length + 1,
-      name: this.state.inputValue,
+      id: todos.length + 1,
+      name: inputValue,
     };
-    this.setState({
-      todos: [...this.state.todos, todo],
-      inputValue: "",
-    });
+    setTodos([...todos, todo]);
+    setInputValue("");
   };
 
-  removeTodo = (id) => {
-    const todos = this.state.todos.filter((todo) => todo.id !== id);
-    this.setState({
-      todos,
-    });
+  const removeTodo = (id) => {
+    const updatedTodos = todos.filter((todo) => todo.id !== id);
+    setTodos(updatedTodos);
   };
 
-  render() {
-    return (
-      <div className="todo">
-        <form onSubmit={this.addToDo} className="todo-form">
-          <input
-            type="text"
-            onChange={this.onChange}
-            value={this.state.inputValue}
-          />
-          <button type="submit">Add To Do</button>
-        </form>
+  return (
+    <div className="todo">
+      <form onSubmit={addToDo} className="todo-form">
+        <input type="text" onChange={onChange} value={inputValue} />
+        <button type="submit">Add To Do</button>
+      </form>
 
-        {this.state.todos.map((todo) => (
-          <TodoItem
-            key={todo.id}
-            id={todo.id}
-            name={todo.name}
-            action={this.removeTodo}
-          />
-        ))}
-      </div>
-    );
-  }
-}
+      {todos.map((todo) => (
+        <TodoItem
+          key={todo.id}
+          id={todo.id}
+          name={todo.name}
+          action={removeTodo}
+        />
+      ))}
+    </div>
+  );
+};
+
 export default TodoList;
